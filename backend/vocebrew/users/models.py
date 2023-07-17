@@ -49,9 +49,6 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-# User = get_user_model()
-
-
 class UserProfile(models.Model):
     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE, related_name='profile')
     vocabulary = models.IntegerField(default=0)

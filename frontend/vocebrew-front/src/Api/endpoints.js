@@ -19,146 +19,100 @@ class Api {
       })
     }
 
-
-    async signin(email, password) {
-      const config = {
-        'headers': {
-          'content-type': 'application/json',
+    async collectionsList ({created_by_me, my_favorite}) {
+      const token = localStorage.getItem("access_token")
+      let config = {}
+      if (token) {
+        config = {
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
+            "AAAAAAAAAAAA": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+            }
         }
-      };
-      console.log('axios signin', this._headers)
-      const body = JSON.stringify(email, password)
-      try {
-        const response = await axios.post(`${this._url}/auth/jwt/create/`, body, config)
-        return response.data
-      }
-      catch(error) {
-        console.log(error)
-      }
-    }
-  
-    
-    async signup({email, password, name, re_password}) {
-      const body = JSON.stringify(email, password, name, re_password)
-      try {
-        const response = await axios.put(`${this._url}/auth/users/`, body, {"Content-Type": "application/json"})
-        return response.data
-      } catch(error) {
-        console.log(error)
-      }
-    }
-    
-    async reset_password(email) {
-      const body = {"email": email}
-      try {
-        const response = await axios.post(
-          `${this._url}/auth/users/reset_password/`,
-          body,
-          this._headers
-        )
-        return response.data
-      } catch(error) {
-        console.error(error)
-      }
-    }
-    
-    async confirm_reset_password({uid, token, new_password, re_new_password}) {
-      const body = JSON.stringify({uid, token, new_password, re_new_password})
-      const config = {
-        "headers" : {
-          "Content-Type": "application/json"
+        console.log("sending request with token", token)
+      } else {
+        config = {
+          "headers": {
+            "Content-Type": "application/json",
+          }
         }
+        console.log("sending request WITHOUT token")
       }
+      const body = JSON.stringify({created_by_me, my_favorite})
       try {
-        const response = await axios.post(
-          `${this._url}/auth/users/reset_password_confirm/`,
-          body,
-          config
-        )
-        return response.data
-      } catch(error) {
-        console.error(error)
-      }
-    }
-    
-    async refresh_token() {
-      const token = localStorage.getItem('refresh_token')
-      const body = {'refresh': `${token}`}
-      try {
-        const res = await axios.post(`${this._url}/auth/jwt/refresh/`, body, this._headers)
-        return res
-      } catch(error) {
-        console.error(error)
-      }
-    }
-
-
-    async load_user() {
-      const token = localStorage.getItem('access_token')
-      const config = {
-        "headers" : {
-          "Content-Type": "application/json",
-          "Authorization": `JWT ${token}`,
-          "Accept": "application/json"
-        }
-      }
-      try {
-        const response = await axios.get(`${this._url}/auth/users/me/`, config)
-        return response.data
-      } catch(error) {
-        console.error(error)
-      }
-    }
-  
-
-    async changePassword({new_password, re_new_password, current_password}) {
-      const token = localStorage.getItem('access_token')
-      const config = {
-        "headers" : {
-          "Content-Type": "application/json",
-          "Authorization": `JWT ${token}`,
-          "Accept": "application/json"
-        }
-      }
-      console.log(new_password, re_new_password, current_password)
-      const body = JSON.stringify({new_password, re_new_password, current_password})
-      try {
-        const response = await axios.post(`${this._url}/auth/users/set_password/`, body, config)
+        console.log('before request', body, config)
+        const response = await axios.get(`${this._url}/collections/`, body, config)
         return response
-      } catch(error) {
-        console.log(error)
+      } catch (error) {
+        console.error(error)
       }
     }
 
+    async collectionDetails ({ id }) {
+      const token = localStorage.getItem("access_token")
+      let config = {}
+      if (token) {
+        config = {
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
+            "AAAAAAAAAAAA": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+            }
+        }
+        console.log("sending request collection details with token", token)
+      } else {
+        config = {
+          "headers": {
+            "Content-Type": "application/json",
+          }
+        }
+        console.log("sending request WITHOUT token")
+      }
+      const body = JSON.stringify({id})
+      try {
+        console.log('before request', body, config)
+        const response = await axios.get(`${this._url}/collections/${id}`, body, config)
+        return response
+      } catch (error) {
+        console.error(error)
+      }
+    }
 
-    // changePassword ({ current_password, new_password }) {
-    //   const token = localStorage.getItem('access_token')
+    async addToFavorites({ id }) {
+      const token = localStorage.getItem("access_token")
+      const config = {
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json"
+        }
+      }
+      const body = {"collection_id": id}
+      try {
+        const res = await axios.post(`${this._url}/add-to-favorites/`, body, config)
+        return res
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    
+  
+    // addToFavorites ({ id }) {
+    //   const token = localStorage.getItem('token')
     //   return fetch(
-    //     `/api/users/set_password/`,
+    //     `/api/recipes/${id}/favorite/`,
     //     {
-    //       method: 'POST',
+    //       method: 'GET',
     //       headers: {
     //         ...this._headers,
     //         'authorization': `Token ${token}`
-    //       },
-    //       body: JSON.stringify({ current_password, new_password })
+    //       }
     //     }
     //   ).then(this.checkResponse)
     // }
-  
-    addToFavorites ({ id }) {
-      const token = localStorage.getItem('token')
-      return fetch(
-        `/api/recipes/${id}/favorite/`,
-        {
-          method: 'GET',
-          headers: {
-            ...this._headers,
-            'authorization': `Token ${token}`
-          }
-        }
-      ).then(this.checkResponse)
-    }
   
     removeFromFavorites ({ id }) {
       const token = localStorage.getItem('token')
@@ -174,19 +128,19 @@ class Api {
       ).then(this.checkResponse)
     }
   
-    getUser ({ id }) {
-      const token = localStorage.getItem('token')
-      return fetch(
-        `/api/users/${id}/`,
-        {
-          method: 'GET',
-          headers: {
-            ...this._headers,
-            'authorization': `Token ${token}`
-          }
-        }
-      ).then(this.checkResponse)
-    }
+    // getUser ({ id }) {
+    //   const token = localStorage.getItem('token')
+    //   return fetch(
+    //     `/api/users/${id}/`,
+    //     {
+    //       method: 'GET',
+    //       headers: {
+    //         ...this._headers,
+    //         'authorization': `Token ${token}`
+    //       }
+    //     }
+    //   ).then(this.checkResponse)
+    // }
   
     getUsers ({
       page = 1,

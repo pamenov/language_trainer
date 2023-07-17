@@ -7,7 +7,7 @@ import Login from './Pages/login/Login';
 // import Logout from './Components/auth/Logout'
 import Register from './Pages/register/Register'
 import { Header, Footer, ProtectedRoute } from './Components'
-import api from './Api/endpoints'
+import auth_api from './Api/auth_api'
 import styles from './styles.module.css'
 import cn from 'classnames'
 
@@ -17,7 +17,7 @@ import {
   SignIn,
   // Subscriptions,
   // Favorites,
-  // SingleCard,
+  WordsetDetail,
   SignUp,
   // RecipeEdit,
   // RecipeCreate,
@@ -25,6 +25,7 @@ import {
   ChangePassword,
   ResetPassword,
   CheckEmailForResetLink,
+  ListsPage,
 } from './Pages'
 import { AuthContext, UserContext } from './Contexts'
 import ResetPasswordConfirm from './Pages/confirm-reset-password';
@@ -39,11 +40,15 @@ function App() {
 
   useEffect(() => {
     async function tryToGetUser() {
-      console.log("use effect", user, loggedIn)
       const token = localStorage.getItem('access_token')
       if (token) {
         try {
-          const res = await api.load_user()
+          let res = await auth_api.load_user()
+          if (res.code === "token_not_valid") {
+            const new_access = await auth_api.refresh_token()
+            localStorage.setItem("access_token", new_access)
+            res = await auth_api.load_user()
+          }
           setUser(res)
           setLoggedIn(true)
             // getOrders()
@@ -51,7 +56,6 @@ function App() {
         catch(err) {
           setLoggedIn(false)
           navigate('/signin')
-          setLoggedIn(false)
         }
       }
     }
@@ -59,21 +63,18 @@ function App() {
   }, [])
 
 
-  const registration = async ({
-    email,
-    password,
-    name,
-    re_password
-  }) => {
+  async function registration({
+    email, password, name, re_password
+  }) {
     try {
-      const reg_response = await api.signup({ email, password, name, re_password })
+      const reg_response = await auth_api.signup({ email, password, name, re_password });
       try {
-        await authorization({email, password})
-      } catch(error) {
-        console.error(error)
+        await authorization({ email, password });
+      } catch (error) {
+        console.error(error);
       }
-    } catch(error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -90,8 +91,8 @@ function App() {
     current_password
   }) => {
     try {
-      const response = await api.changePassword({ new_password, current_password, re_new_password })
-      navigate('/')
+      const response = await auth_api.changePassword({ new_password, current_password, re_new_password })
+      navigate('/wordsets')
     } catch(error) {
       console.log(error)
     }
@@ -99,7 +100,7 @@ function App() {
 
   const sendResetEmail = async ({email}) => {
     try{
-      const response = await api.reset_password(email)
+      const response = await auth_api.reset_password(email)
       return response
     } catch(error) {
       console.error(error)
@@ -108,7 +109,7 @@ function App() {
 
   const confirmResetPassword = async ({uid, token, new_password, re_new_password}) => {
     try {
-      const response = await api.confirm_reset_password({uid, token, new_password, re_new_password})
+      const response = await auth_api.confirm_reset_password({uid, token, new_password, re_new_password})
       navigate('/signin')
       return response
     } catch(error) {
@@ -120,11 +121,11 @@ function App() {
     email, password
   }) => {
     try {
-      const res = await api.signin({email, password})
+      const res = await auth_api.signin({email, password})
       localStorage.setItem('access_token', res.access)
       localStorage.setItem('refresh_token', res.refresh)
       try {
-        const user_res = await api.load_user()
+        const user_res = await auth_api.load_user()
         setUser(user_res)
         setLoggedIn(true)
         navigate("/")
@@ -149,6 +150,17 @@ function App() {
         </div>
         <Header loggedIn={loggedIn} onSignOut={onSignOut} />
         <Routes>
+          <Route
+            exact
+            path='/wordsets'
+            element = {<ListsPage/>}
+          />
+          <Route
+            exact
+            path='/wordset/:id'
+            element = {<WordsetDetail/>}
+          />
+
           <Route 
             exact 
             path='/signin'

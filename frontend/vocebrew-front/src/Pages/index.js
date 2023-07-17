@@ -1,7 +1,7 @@
 // import Main from './main'
 import SignIn from './login/Login'
 import SignUp from './register/Register'
-// import SingleCard from './single-card'
+import WordsetDetail from './wordset-detail'
 // import RecipeEdit from './recipe-edit'
 // import Cart from './cart'
 // import Favorites from './favorites'
@@ -12,11 +12,11 @@ import ResetPasswordConfirm from './confirm-reset-password/index'
 import ChangePassword from './change-password'
 import ResetPassword from './reset-password/ResetPassword'
 import CheckEmailForResetLink from './check-email-for-reset/check-email-for-reset'
+import ListsPage from './word-lists'
 
 export {
 //   Main,
   SignIn,
-//   SingleCard,
   SignUp,
 //   RecipeEdit,
 //   Cart,
@@ -27,5 +27,7 @@ export {
   ChangePassword,
   ResetPassword,
   ResetPasswordConfirm,
-  CheckEmailForResetLink
+  CheckEmailForResetLink,
+  ListsPage,
+  WordsetDetail,
 }

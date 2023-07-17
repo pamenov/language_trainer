@@ -1,7 +1,7 @@
 export default [
   {
     title: 'Word lists',
-    href: '/lists',
+    href: '/wordsets',
     auth: false
   },{
     title: 'Favorite',

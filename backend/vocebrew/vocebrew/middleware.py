@@ -14,4 +14,5 @@ class RequestLoggingMiddleware:
         logger.debug(f"Request GET Parameters: {request.GET}")
         logger.debug(f"Request POST Parameters: {request.POST}")
         response = self.get_response(request)
+        logger.info(f"Response body: {response.content}")
         return response
