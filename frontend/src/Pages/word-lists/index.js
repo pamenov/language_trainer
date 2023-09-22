@@ -25,7 +25,7 @@ const ListsPage = () => {
   
   const getCollections = async ({ page = 1 }) => {
     const created_by_me = false, my_favorite = false
-    const result = await api.collectionsList(created_by_me, my_favorite)
+    const result = await api.collectionsList({created_by_me, my_favorite})
     console.log(result.data, "result.data")
     setCollections(result.data)
   }

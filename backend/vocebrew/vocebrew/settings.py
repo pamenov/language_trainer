@@ -19,7 +19,7 @@ SECRET_KEY = environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'backend', '127.0.0.1']
 
 
 # Application definition
@@ -68,9 +68,18 @@ TEMPLATES = [
     },
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.mydomain.com',
+    'https://*.127.0.0.1',
+    'http://127.0.0.1',
+]
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    'http://127.0.0.1:3000',# Add your frontend's origin here
+    'http://127.0.0.1:3000',
+    # 'backend',
+    # 'backend:8000',
+    # Add your frontend's origin here
     # other allowed origins
 ]
 
@@ -110,11 +119,11 @@ WSGI_APPLICATION = 'vocebrew.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': environ["DB_ENGINE"],
         'NAME': environ["DB_NAME"],
-        'USER': environ["DB_USER"],
-        'PASSWORD': environ["DB_PASSWORD"],
-        'HOST': environ["HOST"],
+        'USER': environ["POSTGRES_USER"],
+        'PASSWORD': environ["POSTGRES_PASSWORD"],
+        'HOST': environ["DB_HOST"],
         'PORT': environ["PORT"],
     }
 }
@@ -155,6 +164,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = path.join(BASE_DIR, 'media')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

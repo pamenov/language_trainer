@@ -28,7 +28,6 @@ class Api {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
             "Accept": "application/json",
-            "AAAAAAAAAAAA": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
             }
         }
         console.log("sending request with token", token)
@@ -40,10 +39,8 @@ class Api {
         }
         console.log("sending request WITHOUT token")
       }
-      const body = JSON.stringify({created_by_me, my_favorite})
       try {
-        console.log('before request', body, config)
-        const response = await axios.get(`${this._url}/collections/`, body, config)
+        const response = await axios.get(`${this._url}/collections/`, config)
         return response
       } catch (error) {
         console.error(error)
@@ -59,22 +56,18 @@ class Api {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
             "Accept": "application/json",
-            "AAAAAAAAAAAA": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
             }
         }
-        console.log("sending request collection details with token", token)
       } else {
         config = {
           "headers": {
             "Content-Type": "application/json",
           }
         }
-        console.log("sending request WITHOUT token")
       }
       const body = JSON.stringify({id})
       try {
-        console.log('before request', body, config)
-        const response = await axios.get(`${this._url}/collections/${id}`, body, config)
+        const response = await axios.get(`${this._url}/collections/${id}`, config)
         return response
       } catch (error) {
         console.error(error)
@@ -99,6 +92,32 @@ class Api {
       }
     }
     
+    async getWordToLearn({id}) {
+      const token = localStorage.getItem("access_token")
+      let config = {}
+      if (token) {
+        config = {
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
+            }
+        }
+      } else {
+        config = {
+          "headers": {
+            "Content-Type": "application/json",
+          }
+        }
+      }
+      const body = JSON.stringify({id})
+      try {
+        const response = await axios.get(`${this._url}/collections/${id}/learn/`, config)
+        return response
+      } catch (error) {
+        console.error(error)
+      }
+    }
   
     // addToFavorites ({ id }) {
     //   const token = localStorage.getItem('token')

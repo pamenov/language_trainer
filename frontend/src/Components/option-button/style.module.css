@@ -1,0 +1,41 @@
+.button {
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  background: none;
+  border-radius: 6px;
+  padding: 15px 44px;
+  height: 48px;
+  line-height: 48px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background 0.2s;
+  outline: none;
+  user-select: none;
+  cursor: pointer;
+  width: max-content;
+}
+
+.button:active {
+  box-shadow: 0 0 7px #ddd;
+}
+
+.button_style_white_grey {
+  background: #F0F3FF;
+  color: #ffffff;
+}
+.button_style_white_grey:hover {
+  background: #D8DEFF;
+  color: #d1d1d1;
+}
+
+
+@media screen and (max-width: 940px) {
+  .button {
+    font-size: 12px!important;
+    padding: 0px 12px;
+    height: 32px;
+    line-height: 30px;
+  }
+}

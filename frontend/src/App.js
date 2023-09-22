@@ -2,30 +2,23 @@ import './App.css';
 import {Route, Link, Routes, NavLink, useNavigate} from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import "bootstrap/dist/css/bootstrap.min.css";
-import Word from './Pages/word/Word';
-import Login from './Pages/login/Login';
-// import Logout from './Components/auth/Logout'
-import Register from './Pages/register/Register'
 import { Header, Footer, ProtectedRoute } from './Components'
 import auth_api from './Api/auth_api'
 import styles from './styles.module.css'
 import cn from 'classnames'
 
 import {
-  // Main,
-  // Cart,
   SignIn,
-  // Subscriptions,
-  // Favorites,
   WordsetDetail,
   SignUp,
-  // RecipeEdit,
-  // RecipeCreate,
+  // CollectionEdit,
+  // CollectionCreate,
   // User,
   ChangePassword,
   ResetPassword,
   CheckEmailForResetLink,
   ListsPage,
+  LearnWordPage,
 } from './Pages'
 import { AuthContext, UserContext } from './Contexts'
 import ResetPasswordConfirm from './Pages/confirm-reset-password';
@@ -51,7 +44,6 @@ function App() {
           }
           setUser(res)
           setLoggedIn(true)
-            // getOrders()
         }
         catch(err) {
           setLoggedIn(false)
@@ -160,7 +152,11 @@ function App() {
             path='/wordset/:id'
             element = {<WordsetDetail/>}
           />
-
+          <Route
+            exact
+            path='/wordset/:id/learn/'
+            element = {<LearnWordPage/>}
+          />
           <Route 
             exact 
             path='/signin'

@@ -1,0 +1,17 @@
+.column-container {
+  display: flex;
+  /* display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px; */
+}
+
+.column-for-hebrew {
+  flex: 1;
+  margin-right: 20%;
+  vertical-align: middle;
+}
+
+.column-for-options {
+  display: flex;
+  justify-content: space-around;
+}

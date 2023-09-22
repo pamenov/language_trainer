@@ -13,6 +13,7 @@ import Input from './input'
 import AccountMenu from './account-menu'
 import Nav from './nav'
 import WordsetCard from './wordset-card'
+import OptionButton from './option-button'
 // import Tag from './tag'
 // import TagsContainer from './tags-container'
 // import Textarea from './textarea'
@@ -42,6 +43,7 @@ export {
   AccountMenu,
   Nav,
   WordsetCard,
+  OptionButton,
 //   Tag,
 //   TagsContainer,
 //   Textarea,
