@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,7 +20,7 @@ SECRET_KEY = environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'backend', '127.0.0.1']
+ALLOWED_HOSTS = ['*', 'localhost', 'backend', '127.0.0.1']
 
 
 # Application definition
@@ -74,9 +75,28 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$'
+
+CORS_ALLOW_HEADERS = [
+# 'accept',
+# 'accept-encoding',
+# 'authorization',
+# 'content-type',
+# 'dnt',
+# 'origin',
+# 'user-agent',
+# 'x-csrftoken',
+# 'x-requested-with',
+'access-control-allow-origin',
+'x-csrftoken',
+]
+
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    # 'frontend',
     # 'backend',
     # 'backend:8000',
     # Add your frontend's origin here
@@ -91,9 +111,9 @@ EMAIL_HOST_PASSWORD = environ["GOOGLE_APP_PASSWORD"]
 EMAIL_USE_TLS = True
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -120,7 +140,7 @@ WSGI_APPLICATION = 'vocebrew.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': environ["DB_ENGINE"],
-        'NAME': environ["DB_NAME"],
+        'NAME': environ["POSTGRES_DB"],
         'USER': environ["POSTGRES_USER"],
         'PASSWORD': environ["POSTGRES_PASSWORD"],
         'HOST': environ["DB_HOST"],

@@ -28,6 +28,8 @@ class Api {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
             "Accept": "application/json",
+            // 'Sec-Fetch-Mode': 'no-cors',
+            "Access-Control-Allow-Origin": "*",
             }
         }
         console.log("sending request with token", token)
@@ -35,6 +37,8 @@ class Api {
         config = {
           "headers": {
             "Content-Type": "application/json",
+            // "Access-Control-Allow-Origin": "http://127.0.0.1:8000/",
+            // "AAAAAAAAAAAAAaAAAAAAAA":"BBBBBBBBBBBBBBBBBBBBBBBb",
           }
         }
         console.log("sending request WITHOUT token")
@@ -303,4 +307,5 @@ class Api {
   }
   
   export default new Api(process.env.API_URL || 'http://127.0.0.1:8000', { 'Content-Type': 'application/json' })
+  // export default new Api('http://backend', { 'Content-Type': 'application/json' })
   

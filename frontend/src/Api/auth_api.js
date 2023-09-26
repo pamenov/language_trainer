@@ -1,10 +1,30 @@
 import axios from 'axios'
+// import getCookie from "../Utils/index"
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
+      }
+  }
+  return cookieValue;
+}
+
+
+
 
 class AuthApi {
     constructor (url, headers) {
       this._url = url
       this._headers = headers
     }
+
   
     async signin(email, password) {
       const config = {
@@ -12,8 +32,8 @@ class AuthApi {
           'content-type': 'application/json',
         }
       };
-      console.log('axios signin', this._headers)
-      const body = JSON.stringify(email, password)
+      // console.log('axios signin', this._headers)
+      const body = JSON.stringify({email, password})
       try {
         const response = await axios.post(`${this._url}/auth/jwt/create/`, body, config)
         return response.data
@@ -25,9 +45,32 @@ class AuthApi {
   
     
     async signup({email, password, name, re_password}) {
-      const body = JSON.stringify(email, password, name, re_password)
+      const body = JSON.stringify({email, password, name, re_password})
+      console.log(email, password, re_password, name)
+      console.log("BODY", body)
+      const handmade_body = {
+        'name': name,
+        'email': email,
+        'password': password,
+        're_password': re_password
+      }
+      const csrftoken = getCookie('csrftoken');
+      console.log("TOKEN", csrftoken)
+ 
+      // const headers = {
+      //   "X-CSRFToken": csrftoken,
+      //   "Content-Type": "application/json"
+      // };
+      const config = {
+        'headers': {
+          // 'content-type': 'application/x-www-form-urlencoded',
+          "X-CSRFToken": csrftoken,
+          "Content-Type": "application/json",
+          // "Content-Type": "text/javascript"
+        }
+      };
       try {
-        const response = await axios.put(`${this._url}/auth/users/`, body, {"Content-Type": "application/json"})
+        const response = await axios.post(`${this._url}/auth/users/`,body , config)
         return response.data
       } catch(error) {
         console.log(error)
@@ -118,4 +161,4 @@ class AuthApi {
 }
   
   export default new AuthApi(process.env.API_URL || 'http://127.0.0.1:8000', { 'Content-Type': 'application/json' })
-  
+  // export default new AuthApi('http://backend', { 'Content-Type': 'application/json' })

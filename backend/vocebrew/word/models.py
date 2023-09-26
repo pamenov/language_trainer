@@ -17,7 +17,8 @@ class Word(models.Model):
     english = models.CharField(max_length=15)
     russian = models.CharField(max_length=15)
     frequency = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        null=True
     )
     part_of_speech = models.CharField(max_length=15, choices=PART_OF_SPEECH_CHOICES)
     tags = models.ManyToManyField('Tag', blank=True)
