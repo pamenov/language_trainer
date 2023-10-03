@@ -6,7 +6,7 @@ import WordsetDetail from './wordset-detail'
 // import Cart from './cart'
 // import Favorites from './favorites'
 // import Subscriptions from './subscriptions'
-// import RecipeCreate from './recipe-create'
+import CollectionCreate from './collection-create'
 // import User from './user'
 import LearnWordPage from './learn-wordlist/learn-wordlist'
 import ResetPasswordConfirm from './confirm-reset-password/index'
@@ -23,7 +23,7 @@ export {
 //   Cart,
 //   Favorites,
 //   Subscriptions,
-//   RecipeCreate,
+CollectionCreate,
 //   User,
   ChangePassword,
   ResetPassword,

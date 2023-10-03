@@ -15,5 +15,9 @@ export default [
     title: 'My lists',
     href: '/favorites',
     auth: true
+  }, {
+    title: 'Create word list',
+    href: '/collection/create',
+    auth: true
   }, 
 ]

@@ -1,6 +1,4 @@
-import { Container, Input, Title, Main, Form, Button } from '../../Components'
-// import Button from '../../Components/button'
-// import Input from '../../Compo'
+import { Container, Input, Title, Main, Form, Button, ErrorMessage } from '../../Components'
 import styles from './styles.module.css'
 import { useFormWithValidation } from '../../Utils'
 import { AuthContext } from '../../Contexts'
@@ -8,7 +6,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { useContext } from 'react'
 // import MetaTags from 'react-meta-tags'
 
-const SignIn = ({ onSignIn }) => {
+const SignIn = ({ loginError, onSignIn }) => {
   const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation()
   const authContext = useContext(AuthContext)
 
@@ -49,6 +47,7 @@ const SignIn = ({ onSignIn }) => {
         >
           Login
         </Button>
+        <ErrorMessage message={loginError} />
         <p className={styles.reset}> 
           Forgot your password? <Link to='/resetpassword'> Reset </Link>
         </p>

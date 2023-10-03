@@ -6,6 +6,7 @@ import Wordlist from './wordlist'
 import Description from './description'
 import cn from 'classnames'
 import { Navigate, useParams, useLocation} from 'react-router-dom'
+import Api from '../../Api/endpoints'
 
 import { useCollections } from '../../Utils/index.js'
 import api from '../../Api/endpoints'
@@ -13,10 +14,8 @@ import api from '../../Api/endpoints'
 const WordsetDetail = () => {
   // const [ loading, setLoading ] = useState(true)
   const {
-    // recipe,
-    // setRecipe,
-    handleLike,
-    // handleSubscribe
+    collections,
+    setCollections
   } = useCollections()
   const authContext = useContext(AuthContext)
   const userContext = useContext(UserContext)
@@ -42,26 +41,40 @@ const WordsetDetail = () => {
   })
   const { id } = useParams()
 
+  const handleLike = async (id) => {
+    if (authContext) {
+      const response = await Api.changeFavorites(id)
+      setCollection({ ...collection, "is_favorited": !collection["is_favorited"]})
+      return response
+    }
+  }
+
   useEffect(_ => {
     // console.log(useLocation())
     const getCollection = async (id) => {
       try {
         const response = await api.collectionDetails({id})
-        setCollection(response.data)
+        return response.data
       } catch(error) {
         console.error(error) 
       }
     }
-    getCollection(id)
+    // const get
+    const getAllStates = async (id) => {
+      const collection_tmp = await getCollection(id)
+      setCollection(collection_tmp)
+    }
+    getAllStates(id)
   }, [])
   
   // const { url } = useRouteMatch()
-  const {
+  let {
     name,
     description,
     is_favorited,
     list_of_words,
   } = collection
+
   const length = list_of_words.length
   
   return <Main>
@@ -78,11 +91,11 @@ const WordsetDetail = () => {
               <h1 className={styles["single-card__title"]}>{name}</h1>
               {authContext && <Button
                 modifier='style_none'
-                clickHandler={_ => {
-                  handleLike({ id, toLike: !is_favorited })
+                clickHandler={async _ => {
+                  await handleLike(id)
                 }}
               >
-                {is_favorited ? <Icons.StarBigActiveIcon /> : <Icons.StarBigIcon />}
+                {collection["is_favorited"]? <Icons.StarBigActiveIcon /> : <Icons.StarBigIcon />}
               </Button>}
 
           </div>

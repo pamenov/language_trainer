@@ -2,6 +2,8 @@ import styles from './style.module.css'
 import { LinkComponent, Icons, Button} from '../index'
 import { useState, useContext } from 'react'
 import { AuthContext, UserContext } from '../../Contexts'
+import Api from '../../Api/endpoints'
+import { useEffect } from 'react'
 
 const WordsetCard = ({
   id,
@@ -9,10 +11,18 @@ const WordsetCard = ({
   description,
   word_counter,
   is_favorited,
-  handleLike,
+  // handleLike,
 }) => {
   const authContext = useContext(AuthContext)
   const userContext = useContext(UserContext)
+
+  const handleLike = async (id) => {
+    if (authContext) {
+      const response = await Api.changeFavorites(id)
+      return response
+    }
+  }
+
     return <div className={styles.card}>
       {/* <LinkComponent
         className={styles.card__title}
@@ -26,7 +36,7 @@ const WordsetCard = ({
           title={name}
         />
         <LinkComponent
-          className={styles.card__title}
+          className={styles.card__description}
           href={`/wordset/${id}`}
           title={description}
         />
@@ -58,7 +68,7 @@ const WordsetCard = ({
           {authContext && <Button
             modifier='style_none'
             clickHandler={_ => {
-              handleLike({ id, toLike: !is_favorited })
+              handleLike(id)
             }}
           >
             {is_favorited ? <Icons.StarActiveIcon /> : <Icons.StarIcon />}

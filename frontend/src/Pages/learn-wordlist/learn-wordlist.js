@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import api from "../../Api/endpoints"
-import { Container, Main, TagsContainer, LinkComponent, OptionButton } from '../../Components'
+import { Container, Main, WordCard, OptionButton, SessionCounters} from '../../Components'
 import { useParams } from "react-router-dom"
 import styles from './styles.module.css'
-
+import { shuffleArray } from "../../Utils"
+import { AuthContext, UserContext } from '../../Contexts'
 
 
 const LearnWordPage = () => {
@@ -14,6 +15,11 @@ const LearnWordPage = () => {
     "word_id":"4"
   })
   const id = useParams()
+  const authContext = useContext(AuthContext)
+  const userContext = useContext(UserContext)
+
+  const [questionCounter, setQuestionCounter] = useState(0)
+  const [rightAnswers, setRightAnswers] = useState(0)
 
   useEffect(_ => {
     const getWordAndOptions = async (id) => {
@@ -26,26 +32,46 @@ const LearnWordPage = () => {
       }
     }
     getWordAndOptions(id)
-  }, [])
+  }, [questionCounter])
 
-  const AnimateAnswer = (isCorrect, buttonId) => {
-
+  const animateAnswer = (isCorrect, buttonId) => {
+    const colormap = {
+      true: "#00bb00",
+      false: "#ee0000"
+    }
+    const color = colormap[isCorrect]
+    const element = document.getElementById(buttonId);
+    element.style.background = color;
+    return new Promise(() => {
+      setTimeout(() => {
+        element.style.background = "#F0F3FF"
+        setQuestionCounter(questionCounter + 1)
+        if (isCorrect) {
+          setRightAnswers(rightAnswers + 1)
+        }
+        if (authContext) {
+          api.sendStatistics(isCorrect, wordAndOptions["word_id"])
+        }
+      }, 300)
+    })
   }
 
-  const {hebrew, translate, fake_translate, word_id} = wordAndOptions
+  const arrayToDisplay = shuffleArray([
+    <OptionButton buttonId="button-1" clickHandler={async () => {await animateAnswer(true, "button-1")}}> {wordAndOptions["translate"]} </OptionButton>,
+    <OptionButton buttonId="button-2" clickHandler={async () => {await animateAnswer(false, "button-2")}}> {wordAndOptions["fake_translate"]} </OptionButton>,
+  ])
+
   return <Main>
     <Container>
       <div className={styles["column-container"]}>
         <div className={styles["column-for-hebrew"]}>
-          {hebrew}
+          <SessionCounters totalCounter={questionCounter} correctCounter={rightAnswers} />
+          <WordCard word={wordAndOptions["hebrew"]} />
         </div>
         <div className={styles["column-for-options"]}>
-          <OptionButton clickHandler={() => {this.AnimateAnswer(true)}}>
-            <p>{translate}</p>
-          </OptionButton>
-          <OptionButton clickHandler={() => {this.AnimateAnswer(false)}}>
-            <p>{fake_translate}</p>
-          </OptionButton>
+          {/* lalalal */}
+          {arrayToDisplay[0]}
+          {arrayToDisplay[1]}
         </div>
       </div>
     </Container>

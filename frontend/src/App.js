@@ -12,7 +12,7 @@ import {
   WordsetDetail,
   SignUp,
   // CollectionEdit,
-  // CollectionCreate,
+  CollectionCreate,
   // User,
   ChangePassword,
   ResetPassword,
@@ -30,6 +30,7 @@ function App() {
   const [ loggedIn, setLoggedIn ] = useState(false)
   const [ user, setUser ] = useState(null)
   const [ menuToggled, setMenuToggled ] = useState(false)
+  const [ loginError, setLoginError ] = useState(null)
 
   useEffect(() => {
     async function tryToGetUser() {
@@ -37,6 +38,7 @@ function App() {
       if (token) {
         try {
           let res = await auth_api.load_user()
+          console.log(res)
           if (res.code === "token_not_valid") {
             const new_access = await auth_api.refresh_token()
             localStorage.setItem("access_token", new_access)
@@ -66,7 +68,7 @@ function App() {
         console.error(error);
       }
     } catch (error) {
-      console.log(error);
+      setLoginError(error.message)
     }
   }
 
@@ -114,18 +116,31 @@ function App() {
   }) => {
     try {
       const res = await auth_api.signin({email, password})
+      console.log("after signin", res)
       localStorage.setItem('access_token', res.access)
       localStorage.setItem('refresh_token', res.refresh)
       try {
         const user_res = await auth_api.load_user()
         setUser(user_res)
         setLoggedIn(true)
+        setLoginError(null)
         navigate("/")
       } catch(error) {
-        console.error(error)
+        try {
+          const refresh_res = await auth_api.refresh_token()
+          localStorage.setItem('access_token', refresh_res.data.access)
+          const user_res = await auth_api.load_user()
+          setUser(user_res)
+          setLoggedIn(true)
+          setLoginError(null)
+          navigate("/")
+        }
+        catch (error) {
+          setLoginError(error.message)
+        }
       }
     } catch(error) {
-      console.error(error)
+      setLoginError(error.message)
     }
   }
 
@@ -157,10 +172,18 @@ function App() {
             path='/wordset/:id/learn/'
             element = {<LearnWordPage/>}
           />
+          <Route
+            exact
+            path='/collection/create/'
+            element={<CollectionCreate
+              loggedIn={loggedIn}
+              />}
+          />
           <Route 
             exact 
             path='/signin'
             element = {<SignIn
+              loginError={loginError}
               onSignIn={authorization}
             />}
           />
@@ -168,6 +191,7 @@ function App() {
             exact 
             path='/signup'
             element={<SignUp
+              loginError={loginError}
               onSignUp={registration}
             />}
           />

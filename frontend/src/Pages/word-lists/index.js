@@ -1,64 +1,52 @@
-import { Title, Pagination, CardList, Container, Main, CheckboxGroup, WordsetCard } from '../../Components'
+import { Title, Pagination, CardList, Container, Main, WordsetCard } from '../../Components'
+import { AuthContext } from '../../Contexts'
 import styles from './styles.module.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import api from '../../Api/endpoints'
-import { useCollections } from '../../Utils'
-// import MetaTags from 'react-meta-tags'
-// import axios from 'axios'
+// import { useCollections } from '../../Utils'
+
 
 const ListsPage = () => {
-  const {
-    collections,
-    setCollections,
-    collectionsCount,
-    setCollectionsCount,
-    collectionsPage,
-    setCollectionsPage,
-    // tagsValue,
-    // setTagsValue,
-    // handleTagsChange,
-    handleLike,
-  } = useCollections()
+  // const {
+  //   collections,
+  //   setCollections,
+  //   collectionsCount,
+  //   setCollectionsCount,
+  //   collectionsPage,
+  //   setCollectionsPage,
+  //   // tagsValue,
+  //   // setTagsValue,
+  //   // handleTagsChange,
+  //   // handleLike,
+  // } = useCollections()
+  const [ collections, setCollections ] = useState([])
+  const [ collectionsCount, setCollectionsCount ] = useState(0)
+  const [ collectionsPage, setCollectionsPage ] = useState(1)
+  const authContext = useContext(AuthContext)
 
-  // const [collections, setCollections] = useState()
-
-  
-  const getCollections = async ({ page = 1 }) => {
-    const created_by_me = false, my_favorite = false
-    const result = await api.collectionsList({created_by_me, my_favorite})
-    console.log(result.data, "result.data")
-    setCollections(result.data)
+  const handleLike = async (id) => {
+    if (authContext) {
+      const response = await api.changeFavorites(id)
+      // setCollection({ ...collection, "is_favorited": !collection["is_favorited"]})
+      // return response
+    }
   }
 
-  useEffect(_ => {
-    const sendRequest = async() => {
-      await getCollections({ page: collectionsPage })
-      console.log(collections, "in use effect")
+  useEffect( _ => {
+    const getCollections = async ({ page = 1 }) => {
+      const limit = 6
+      const created_by_me = false, my_favorite = false
+      const {results, count} = await api.collectionsList({created_by_me, my_favorite, page, limit})
+      setCollections(results)
+      setCollectionsCount(count)
     }
-    sendRequest()
-  }, [])
-
-  // useEffect(_ => {
-  //   api.getTags()
-  //     .then(tags => {
-  //       setTagsValue(tags.map(tag => ({ ...tag, value: true })))
-  //     })
-  // }, [])
-
+    getCollections({ page: collectionsPage })
+  }, [collectionsPage])
 
   return <Main>
     <Container>
-      {/* <MetaTags>
-        <title>Рецепты</title>
-        <meta name="description" content="Продуктовый помощник - Рецепты" />
-        <meta property="og:title" content="Рецепты" />
-      </MetaTags> */}
       <div className={styles.title}>
         <Title title='Word sets' />
-        {/* <CheckboxGroup
-          values={tagsValue}
-          handleChange={handleTagsChange}
-        /> */}
       </div>
       <CardList>
         {collections.map(card => <WordsetCard

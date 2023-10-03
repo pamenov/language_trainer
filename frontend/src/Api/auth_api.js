@@ -17,6 +17,16 @@ function getCookie(name) {
 }
 
 
+const proceedError = (error) => {
+  const error_obj = error.response.data
+  const error_mesage = error_obj[Object.keys(error_obj)[0]]
+  if (Array.isArray(error_mesage)) {
+    error_mesage = error_mesage[0]
+  }
+  return Promise.reject(new Error(error_mesage))
+}
+
+
 
 
 class AuthApi {
@@ -30,50 +40,32 @@ class AuthApi {
       const config = {
         'headers': {
           'content-type': 'application/json',
+          "Access-Control-Allow-Origin": "http://127.0.0.1:8000",
         }
       };
-      // console.log('axios signin', this._headers)
-      const body = JSON.stringify({email, password})
+      const body = JSON.stringify(email, password)
       try {
         const response = await axios.post(`${this._url}/auth/jwt/create/`, body, config)
         return response.data
       }
       catch(error) {
-        console.log(error)
+        return proceedError(error)
       }
     }
   
     
     async signup({email, password, name, re_password}) {
       const body = JSON.stringify({email, password, name, re_password})
-      console.log(email, password, re_password, name)
-      console.log("BODY", body)
-      const handmade_body = {
-        'name': name,
-        'email': email,
-        'password': password,
-        're_password': re_password
-      }
-      const csrftoken = getCookie('csrftoken');
-      console.log("TOKEN", csrftoken)
- 
-      // const headers = {
-      //   "X-CSRFToken": csrftoken,
-      //   "Content-Type": "application/json"
-      // };
       const config = {
         'headers': {
-          // 'content-type': 'application/x-www-form-urlencoded',
-          "X-CSRFToken": csrftoken,
-          "Content-Type": "application/json",
-          // "Content-Type": "text/javascript"
+          "content-type": "application/json",
         }
       };
       try {
         const response = await axios.post(`${this._url}/auth/users/`,body , config)
         return response.data
       } catch(error) {
-        console.log(error)
+        return proceedError(error)
       }
     }
     
@@ -127,7 +119,7 @@ class AuthApi {
       const config = {
         "headers" : {
           "Content-Type": "application/json",
-          "Authorization": `JWT ${token}`,
+          "Authorization": `Bearer ${token}`,
           "Accept": "application/json"
         }
       }
@@ -135,7 +127,7 @@ class AuthApi {
         const response = await axios.get(`${this._url}/auth/users/me/`, config)
         return response.data
       } catch(error) {
-        console.error(error)
+        return proceedError(error)
       }
     }
   

@@ -8,18 +8,15 @@ class Api {
   
     checkResponse (res) {
       return new Promise((resolve, reject) => {
-        // console.log(res.data, res)
         if (res.status === 204) {
           return resolve(res)
         }
         const func = res.status < 400 ? resolve : reject
-        // console.log(res.json())
-        // res.then((data) => console.log(data))
         res.json().then(data => func(data))
       })
     }
 
-    async collectionsList ({created_by_me, my_favorite}) {
+    async collectionsList ({created_by_me, my_favorite, page, limit}) {
       const token = localStorage.getItem("access_token")
       let config = {}
       if (token) {
@@ -28,24 +25,19 @@ class Api {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
             "Accept": "application/json",
-            // 'Sec-Fetch-Mode': 'no-cors',
             "Access-Control-Allow-Origin": "*",
             }
         }
-        console.log("sending request with token", token)
       } else {
         config = {
           "headers": {
             "Content-Type": "application/json",
-            // "Access-Control-Allow-Origin": "http://127.0.0.1:8000/",
-            // "AAAAAAAAAAAAAaAAAAAAAA":"BBBBBBBBBBBBBBBBBBBBBBBb",
           }
         }
-        console.log("sending request WITHOUT token")
       }
       try {
-        const response = await axios.get(`${this._url}/collections/`, config)
-        return response
+        const response = await axios.get(`${this._url}/collections/?page=${page}&limit=${limit}`, config)
+        return response.data
       } catch (error) {
         console.error(error)
       }
@@ -69,7 +61,6 @@ class Api {
           }
         }
       }
-      const body = JSON.stringify({id})
       try {
         const response = await axios.get(`${this._url}/collections/${id}`, config)
         return response
@@ -78,7 +69,7 @@ class Api {
       }
     }
 
-    async addToFavorites({ id }) {
+    async changeFavorites(collection_id) {
       const token = localStorage.getItem("access_token")
       const config = {
         "headers": {
@@ -87,9 +78,9 @@ class Api {
           "Accept": "application/json"
         }
       }
-      const body = {"collection_id": id}
+      const body = JSON.stringify({collection_id})
       try {
-        const res = await axios.post(`${this._url}/add-to-favorites/`, body, config)
+        const res = await axios.post(`${this._url}/change-favorites/`, body, config)
         return res
       } catch (error) {
         console.error(error)
@@ -114,7 +105,6 @@ class Api {
           }
         }
       }
-      const body = JSON.stringify({id})
       try {
         const response = await axios.get(`${this._url}/collections/${id}/learn/`, config)
         return response
@@ -123,33 +113,55 @@ class Api {
       }
     }
   
-    // addToFavorites ({ id }) {
-    //   const token = localStorage.getItem('token')
-    //   return fetch(
-    //     `/api/recipes/${id}/favorite/`,
-    //     {
-    //       method: 'GET',
-    //       headers: {
-    //         ...this._headers,
-    //         'authorization': `Token ${token}`
-    //       }
-    //     }
-    //   ).then(this.checkResponse)
-    // }
-  
-    removeFromFavorites ({ id }) {
-      const token = localStorage.getItem('token')
-      return fetch(
-        `/api/recipes/${id}/favorite/`,
-        {
-          method: 'DELETE',
-          headers: {
-            ...this._headers,
-            'authorization': `Token ${token}`
+    async sendStatistics(isCorrect, word_id) {
+      const token = localStorage.getItem("access_token")
+      if (token) {
+        const config = {
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
           }
         }
-      ).then(this.checkResponse)
+        const body = JSON.stringify({isCorrect, word_id})
+        try {
+          const response = await axios.post(`${this._url}/statistics/`, body, config)
+          return response
+        } catch (error) {
+          console.log(error)
+        }
+
+      } else {
+        console.log("No token found")
+      }
+
     }
+
+    async createCollection(data) {
+      const token = localStorage.getItem("access_token")
+      if (token) {
+        const config = {
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
+          }
+        }
+        const body = JSON.stringify({...data, words: []})
+        try {
+          const response = await axios.post(`${this._url}/collections/add/`, body, config)
+          return response.data
+        } catch (error) {
+          console.log(error)
+        }
+
+      } else {
+        console.log("No token found")
+      }
+    }
+
+
+  
   
     // getUser ({ id }) {
     //   const token = localStorage.getItem('token')

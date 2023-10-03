@@ -1,0 +1,19 @@
+.word {
+  margin: 30px;
+  font-size: 40px;
+  text-align: left;
+}
+
+
+@media screen and (max-width: 940px) {
+  .word {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .word {
+    font-size: 10px;
+  }
+}
+

@@ -14,9 +14,12 @@ import AccountMenu from './account-menu'
 import Nav from './nav'
 import WordsetCard from './wordset-card'
 import OptionButton from './option-button'
+import ErrorMessage from './error-message'
+import WordCard from './word-in-contest'
+import SessionCounters from './session-counters'
 // import Tag from './tag'
 // import TagsContainer from './tags-container'
-// import Textarea from './textarea'
+import Textarea from './textarea'
 // import Checkbox from './checkbox'
 // import CheckboxGroup from './checkbox-group'
 import Pagination from './pagination'
@@ -44,9 +47,12 @@ export {
   Nav,
   WordsetCard,
   OptionButton,
+  ErrorMessage,
+  WordCard,
+  SessionCounters,
 //   Tag,
 //   TagsContainer,
-//   Textarea,
+  Textarea,
 //   Checkbox,
 //   CheckboxGroup,
   Pagination,

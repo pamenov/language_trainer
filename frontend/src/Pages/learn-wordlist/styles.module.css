@@ -9,9 +9,12 @@
   flex: 1;
   margin-right: 20%;
   vertical-align: middle;
+  flex-direction: column;
 }
 
 .column-for-options {
+  flex: 1;
   display: flex;
   justify-content: space-around;
+  flex-direction: column;
 }

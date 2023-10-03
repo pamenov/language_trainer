@@ -2,6 +2,9 @@ import cn from 'classnames'
 import styles from './style.module.css'
 
 const OptionButton = ({
+  text,
+  isCorrectOption,
+  buttonId,
   children,
   modifier = 'style_light-blue',
   href,
@@ -23,6 +26,7 @@ const OptionButton = ({
     </a>
   }
   return <button
+    id={buttonId}
     className={classNames}
     disabled={disabled}
     onClick={_ => clickHandler && clickHandler()}
