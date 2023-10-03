@@ -7,6 +7,8 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from random import choice
 from .permissions import isOwner
+from rest_framework.pagination import PageNumberPagination
+
 
 
 class CORSListAPIView(generics.ListAPIView):
@@ -28,6 +30,7 @@ class CollectionViewSet(CORSListAPIView):
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
     lookup_field = 'id'
+    pagination_class = PageNumberPagination
 
 
 class CollectionDetail(generics.RetrieveAPIView):
