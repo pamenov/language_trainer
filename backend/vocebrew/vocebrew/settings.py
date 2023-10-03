@@ -40,9 +40,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -76,32 +76,31 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r'^/api/.*$'
+# CORS_URLS_REGEX = r'^/api/.*$'
 
 CORS_ALLOW_HEADERS = [
-# 'accept',
-# 'accept-encoding',
-# 'authorization',
-# 'content-type',
-# 'dnt',
-# 'origin',
-# 'user-agent',
-# 'x-csrftoken',
-# 'x-requested-with',
-'access-control-allow-origin',
+'accept',
+'accept-encoding',
+'authorization',
+'content-type',
+'dnt',
+'origin',
+'user-agent',
 'x-csrftoken',
+'x-requested-with',
+'access-control-allow-origin',
 ]
 
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    # 'frontend',
-    # 'backend',
-    # 'backend:8000',
-    # Add your frontend's origin here
-    # other allowed origins
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000',
+#     # 'frontend',
+#     # 'backend',
+#     # 'backend:8000',
+#     # Add your frontend's origin here
+#     # other allowed origins
+# ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -111,9 +110,9 @@ EMAIL_HOST_PASSWORD = environ["GOOGLE_APP_PASSWORD"]
 EMAIL_USE_TLS = True
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    # ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',

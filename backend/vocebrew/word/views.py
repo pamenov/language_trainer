@@ -1,6 +1,6 @@
 from rest_framework import generics, viewsets
-from .models import Word, Collection
-from .serializers import WordSerializer, CollectionSerializer, CollectionDetailSerializer
+from .models import Word, Collection, WordStatistics
+from .serializers import WordSerializer, CollectionSerializer, CollectionDetailSerializer, StatisticsSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -36,8 +36,9 @@ class CollectionDetail(generics.RetrieveAPIView):
     lookup_field = 'id'
 
 
-class AddToFavoritesView(APIView):
+class ChangeFavoritesView(APIView):
     def post(self, request):
+        print(request.data)
         collection_id = request.data.get('collection_id')
         user = request.user
 
@@ -47,9 +48,13 @@ class AddToFavoritesView(APIView):
             return Response({'error': 'Collection not found'}, status=status.HTTP_404_NOT_FOUND)
 
         # Add the item to the user's favorites
-        collection.users_using.add(user)
+        is_favorited = collection.users_using.filter(pk=user.pk).exists()
+        if is_favorited:
+            collection.users_using.remove(user)
+        else:
+            collection.users_using.add(user)
 
-        return Response({'success': 'Item added to favorites'}, status=status.HTTP_200_OK)
+        return Response({'success': 'Item status changed'}, status=status.HTTP_200_OK)
 
 
 class RandomWordFromCollection(APIView):
@@ -128,15 +133,26 @@ class AddCollection(APIView):
 
 
 
-# class GetResult(APIView):
-#     def post(self, request):
-#         user = request.user
-#         result = request.data.get("result")
-#         word_id = request.data.get("word_id")
-#         word = get_object_or_404(Word, id=word_id)
-#
-#         if result == "SUCCESS":
+class GetResult(APIView):
+    def post(self, request):
+        user = request.user
+        isCorrect = request.data.get("isCorrect")
+        word_id = request.data.get("word_id")
+        word = get_object_or_404(Word, id=word_id)
 
+        statistics = WordStatistics.objects.filter(user=user, word=word).first()
+        if statistics is not None:
+            statistics.timesShown += 1
+            statistics.timesCorrect += int(isCorrect)
+            statistics.save()
+        else:
+            statistics = WordStatistics.objects.create(
+                word=word,
+                user=user,
+                timesShown=1,
+                timesCorrect=int(isCorrect)
+            )
+        return(Response({'statistics': StatisticsSerializer(statistics).data}, status=status.HTTP_200_OK))
 
 
 

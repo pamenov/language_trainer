@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Word, Collection
+from .models import Word, Collection, WordStatistics
 from random import choice
 
 
@@ -46,6 +46,13 @@ class CollectionDetailSerializer(serializers.ModelSerializer):
             return obj.users_using.filter(id=request.user.id).exists()
         return False
 
+
+class StatisticsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = WordStatistics
+        fields = "__all__"
+        # fields = ('id', 'english')
 
 # class CollectionRandomWordSerializer(serializers.ModelSerializer):
 #     hebrew = serializers.SerializerMethodField()
