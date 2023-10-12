@@ -24,13 +24,13 @@ const ListsPage = () => {
   const [ collectionsPage, setCollectionsPage ] = useState(1)
   const authContext = useContext(AuthContext)
 
-  const handleLike = async (id) => {
-    if (authContext) {
-      const response = await api.changeFavorites(id)
-      // setCollection({ ...collection, "is_favorited": !collection["is_favorited"]})
-      // return response
-    }
-  }
+  // const handleLike = async (id) => {
+  //   if (authContext) {
+  //     const response = await api.changeFavorites(id)
+  //     // setCollection({ ...collection, "is_favorited": !collection["is_favorited"]})
+  //     // return response
+  //   }
+  // }
 
   useEffect( _ => {
     const getCollections = async ({ page = 1 }) => {
@@ -52,7 +52,7 @@ const ListsPage = () => {
         {collections.map(card => <WordsetCard
           {...card}
           key={card.id}
-          handleLike={handleLike}
+          // handleLike={handleLike}
         />)}
       </CardList>
       <Pagination

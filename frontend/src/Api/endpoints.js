@@ -1,8 +1,9 @@
 import axios from 'axios'
+import {authContext} from '../Contexts'
 
 class Api {
     constructor (url, headers) {
-      this._url = url
+      this._url = `${url}/api`
       this._headers = headers
     }
   
@@ -36,7 +37,12 @@ class Api {
         }
       }
       try {
+        console.log("sending request")
+        console.log("Host", this._url)
+        console.log("config", config)
+        console.log("get first arg", `${this._url}/collections/?page=${page}&limit=${limit}`)
         const response = await axios.get(`${this._url}/collections/?page=${page}&limit=${limit}`, config)
+        // const response = await axios.get(`http://localhost/backend/collections/?page=${page}&limit=${limit}`, config)
         return response.data
       } catch (error) {
         console.error(error)
@@ -63,6 +69,7 @@ class Api {
       }
       try {
         const response = await axios.get(`${this._url}/collections/${id}`, config)
+        // const response = await axios.get(`http://localhost/backend/collections/${id}`, config)
         return response
       } catch (error) {
         console.error(error)
@@ -318,6 +325,6 @@ class Api {
     }
   }
   
-  export default new Api(process.env.API_URL || 'http://127.0.0.1:8000', { 'Content-Type': 'application/json' })
-  // export default new Api('http://backend', { 'Content-Type': 'application/json' })
+  // export default new Api(process.env.API_URL || 'http://127.0.0.1:8000', { 'Content-Type': 'application/json' })
+  export default new Api('http://127.0.0.1', { 'Content-Type': 'application/json' })
   

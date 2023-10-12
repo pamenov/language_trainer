@@ -12,7 +12,7 @@ services:
     depends_on:
       - db
     env_file:
-      - ../backend/vocebrew/vocebrew/.env
+      - ./.env_docker
 
   frontend:
     build:
@@ -37,17 +37,18 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - backend
+      - frontend
 
   db:
     image: postgres:15.0
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    # env_file:
-    #   - ../backend/vocebrew/vocebrew/.env
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=vocebrew
+    env_file:
+      - ./.env_docker
+    # environment:
+    #   - POSTGRES_PASSWORD=postgres
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_DB=vocebrew
     # command: ["postgres", "-c", "max_connections=300"]
     #   # - POSTGRES_USER=postgres
     #   - POSTGRES_PASSWORD=pg_password

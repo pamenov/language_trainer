@@ -67,7 +67,6 @@ const WordsetDetail = () => {
     getAllStates(id)
   }, [])
   
-  // const { url } = useRouteMatch()
   let {
     name,
     description,
